@@ -6,15 +6,29 @@ dependencies = [
     "langchain>=0.2",
     "langchain-community>=0.2",
     "langchain-text-splitters>=0.2",
-    "pinecone-client>=3.0",
+    "pinecone>=3.0",
     "anthropic>=0.30",
     "pdfplumber>=0.10",
     "tqdm>=4.66",
     "pydantic>=2.0",
+    "pydantic-settings>=2.3",
     "python-dotenv>=1.0",
     "tiktoken>=0.7",
+    "sentence-transformers>=3.0",
+    # API serving layer (Phase 4)
+    "fastapi[standard]>=0.110",
+    "sse-starlette>=1.8",
+    "prometheus-client>=0.20",
 ]
 
 [project.optional-dependencies]
-test = ["pytest>=8.0", "pytest-cov>=5.0"]
+test = ["pytest>=8.0", "pytest-cov>=5.0", "pytest-asyncio>=0.23"]
 dev = ["ruff>=0.5", "mypy>=1.10"]
+eval = ["ragas>=0.2", "langchain-anthropic>=0.3", "pandas>=2.0"]
+loadtest = ["aiohttp>=3.9"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+markers = [
+    "integration: hits live Pinecone + Anthropic APIs — skipped in CI unless RUN_INTEGRATION=1",
+]

@@ -1,0 +1,780 @@
+{
+  "test_set_version": "1.0",
+  "created_date": "2026-03-28",
+  "source_document": "codigo_penal_cdmx_31225.pdf",
+  "total_questions": 75,
+  "category_distribution": {
+    "factual_lookup": 25,
+    "comparison": 15,
+    "multi_article": 10,
+    "conditional": 10,
+    "adversarial_oos": 10,
+    "adversarial_tricky": 5
+  },
+  "difficulty_distribution": {
+    "easy": 15,
+    "medium": 25,
+    "hard": 20,
+    "adversarial": 15
+  },
+  "questions": [
+
+    {
+      "id": "q001",
+      "question": "¿Qué es el homicidio según el código penal?",
+      "expected_answer": "Comete el delito de homicidio el que priva de la vida a otro. La definición base se encuentra en el artículo 302 del Código Penal Federal.",
+      "expected_articles": ["302"],
+      "category": "homicidio",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Direct definition lookup from Art. 302. Single-sentence answer expected."
+    },
+    {
+      "id": "q002",
+      "question": "¿Cuál es la pena por homicidio simple?",
+      "expected_answer": "Al que cometa el delito de homicidio simple intencional se le impondrán de doce a veinticuatro años de prisión, conforme al artículo 307 del Código Penal Federal.",
+      "expected_articles": ["302", "307"],
+      "category": "homicidio",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Direct penalty lookup. Answer must include the 12–24 year range from Art. 307."
+    },
+    {
+      "id": "q003",
+      "question": "¿Qué se entiende por lesiones en el código penal federal?",
+      "expected_answer": "Bajo el nombre de lesión se comprende no sólo las heridas, escoriaciones, contusiones, fracturas, dislocaciones, quemaduras, sino toda alteración en la salud y cualquier otro daño que deja huella material en el cuerpo humano, si estos efectos son producidos por una causa externa (artículo 288).",
+      "expected_articles": ["288"],
+      "category": "lesiones",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Art. 288 gives an enumerated definition. Answer should list the core elements."
+    },
+    {
+      "id": "q004",
+      "question": "¿Cuál es la pena por lesiones que tardan en sanar menos de quince días?",
+      "expected_answer": "Si la lesión no pone en peligro la vida del ofendido y tarda en sanar menos de quince días, se impondrán de tres a ocho meses de prisión o de treinta a ochenta días multa (artículo 289).",
+      "expected_articles": ["289"],
+      "category": "lesiones",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Must include the 3–8 month / fine alternative from Art. 289."
+    },
+    {
+      "id": "q005",
+      "question": "¿Cuál es la pena por lesiones que tardan más de quince días en sanar?",
+      "expected_answer": "Si la lesión tarda en sanar más de quince días se impondrán de uno a tres años de prisión y de cincuenta a ciento ochenta días multa (artículo 290).",
+      "expected_articles": ["290"],
+      "category": "lesiones",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Art. 290 covers the 15+ day healing window. Answer must state the 1–3 year range."
+    },
+    {
+      "id": "q006",
+      "question": "¿Cómo define el código penal federal el delito de violación?",
+      "expected_answer": "Al que por medio de la violencia física o moral realice cópula con persona de cualquier sexo, sin su consentimiento (artículo 265). La violencia puede ser física o moral (amenazas).",
+      "expected_articles": ["265"],
+      "category": "sexual",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Art. 265 definition. Must include 'violencia física o moral' and 'cópula'."
+    },
+    {
+      "id": "q007",
+      "question": "¿Cuál es la pena por violación?",
+      "expected_answer": "Al que cometa el delito de violación se le impondrá prisión de ocho a veinte años (artículo 265 del Código Penal Federal).",
+      "expected_articles": ["265"],
+      "category": "sexual",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "The 8–20 year range from Art. 265 is the core answer."
+    },
+    {
+      "id": "q008",
+      "question": "¿Qué es el estupro según el código penal?",
+      "expected_answer": "Comete estupro el que tenga cópula con persona mayor de quince y menor de dieciocho años, obteniendo su consentimiento mediante engaño (artículo 267). La pena es de uno a seis años de prisión.",
+      "expected_articles": ["267"],
+      "category": "sexual",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Art. 267 — key elements: age range 15–18, consent obtained through deception."
+    },
+    {
+      "id": "q009",
+      "question": "¿Cómo define el código penal el delito de robo?",
+      "expected_answer": "Comete el delito de robo quien con ánimo de dominio y sin consentimiento de quien legalmente puede otorgarlo se apodera de una cosa mueble ajena (artículo 367 del Código Penal Federal).",
+      "expected_articles": ["367"],
+      "category": "robo",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Art. 367 core definition. Key elements: ánimo de dominio, sin consentimiento, cosa mueble ajena."
+    },
+    {
+      "id": "q010",
+      "question": "¿Qué es el abuso de confianza?",
+      "expected_answer": "Comete abuso de confianza quien con perjuicio de alguien dispone para sí o para otro de cualquier cosa mueble ajena de la que se le haya transmitido la tenencia y no el dominio (artículo 382). La diferencia clave con el robo es que en el abuso de confianza la cosa fue entregada voluntariamente.",
+      "expected_articles": ["382"],
+      "category": "patrimonio",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Art. 382. The 'tenencia y no el dominio' distinction is the crux of the definition."
+    },
+    {
+      "id": "q011",
+      "question": "¿Cuál es la definición de extorsión en el código penal federal?",
+      "expected_answer": "Comete el delito de extorsión quien sin derecho obliga a otro a dar, hacer, dejar de hacer o tolerar algo, obteniendo un lucro para sí o para otro o causando a alguien un perjuicio patrimonial (artículo 390).",
+      "expected_articles": ["390"],
+      "category": "extorsion",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Art. 390. Elements: obligación, amenaza/presión, lucro ilícito o perjuicio."
+    },
+    {
+      "id": "q012",
+      "question": "¿Qué es la privación ilegal de la libertad?",
+      "expected_answer": "Se priva ilegalmente de la libertad a una persona cuando se le detiene o retiene en contra de su voluntad sin que exista orden legal que lo justifique. El artículo 364 establece este delito y sus elementos.",
+      "expected_articles": ["364"],
+      "category": "libertad",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Art. 364. Distinguish from secuestro: no ánimo de lucro required."
+    },
+    {
+      "id": "q013",
+      "question": "¿Cuál es la pena por privación ilegal de la libertad?",
+      "expected_answer": "Al que prive ilegalmente de su libertad a otro se le aplicará de seis meses a tres años de prisión y de veinticinco a cien días multa (artículo 364 del Código Penal Federal).",
+      "expected_articles": ["364"],
+      "category": "libertad",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "The 6-month to 3-year range and the fine are the key data points."
+    },
+    {
+      "id": "q014",
+      "question": "¿Cómo define el código penal el fraude?",
+      "expected_answer": "Comete el delito de fraude quien engañando a alguien o aprovechándose del error en que éste se halla, se hace ilícitamente de alguna cosa o alcanza un lucro indebido en beneficio propio o de otro (artículo 386). La pena varía según el monto defraudado.",
+      "expected_articles": ["386"],
+      "category": "fraude",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Art. 386. Core elements: engaño o aprovechamiento del error, lucro ilícito."
+    },
+    {
+      "id": "q015",
+      "question": "¿Qué es el encubrimiento según el código penal federal?",
+      "expected_answer": "Comete encubrimiento quien, sin haber participado en un delito, con posterioridad a su ejecución, ayuda al delincuente a eludir la acción de la justicia, oculta, guarda o compra los instrumentos u objetos del delito, o auxilia al responsable (artículo 400).",
+      "expected_articles": ["400"],
+      "category": "encubrimiento",
+      "difficulty": "easy",
+      "question_type": "factual_lookup",
+      "notes": "Art. 400. Key: posterior participation, no prior knowledge or involvement required."
+    },
+
+    {
+      "id": "q016",
+      "question": "¿Cuál es la pena por lesiones que producen la pérdida de un miembro u órgano?",
+      "expected_answer": "Si la lesión produce la pérdida de cualquier órgano o miembro, de sus funciones, de la vista, del oído, o resulta en una enfermedad incurable o inutilización completa de un miembro, se impondrán de cinco a ocho años de prisión (artículo 292).",
+      "expected_articles": ["292"],
+      "category": "lesiones",
+      "difficulty": "medium",
+      "question_type": "factual_lookup",
+      "notes": "Art. 292 covers the most severe non-lethal lesiones. Must include the 5–8 year range."
+    },
+    {
+      "id": "q017",
+      "question": "¿Cuál es la pena por secuestro?",
+      "expected_answer": "Al que prive de la libertad a otro con el propósito de obtener rescate, obligar a la autoridad a realizar o abstenerse de realizar un acto, o causar daño, se le aplicará de quince a cuarenta años de prisión y de quinientos a dos mil días multa (artículo 366).",
+      "expected_articles": ["366"],
+      "category": "libertad",
+      "difficulty": "medium",
+      "question_type": "factual_lookup",
+      "notes": "Art. 366. Must include: 15–40 years, 500–2000 días multa, and the ánimo de lucro/rescate purpose."
+    },
+    {
+      "id": "q018",
+      "question": "¿Cuál es la pena por extorsión?",
+      "expected_answer": "Al que cometa el delito de extorsión se le aplicará de dos a ocho años de prisión y de cuarenta a ciento sesenta días multa. Si la extorsión se comete por dos o más personas o haciendo uso de medios de comunicación, la pena aumenta (artículo 390).",
+      "expected_articles": ["390"],
+      "category": "extorsion",
+      "difficulty": "medium",
+      "question_type": "factual_lookup",
+      "notes": "Art. 390. Base penalty 2–8 years. Mention of agravantes is a plus."
+    },
+    {
+      "id": "q019",
+      "question": "¿Cuál es la pena por cohecho para un servidor público?",
+      "expected_answer": "Al servidor público que solicite o reciba indebidamente dinero, valores, dádivas u otro beneficio para hacer o dejar de hacer algo justo o injusto relativo a sus funciones, se le impondrán de tres a catorce años de prisión, multa, y destitución e inhabilitación (artículo 222).",
+      "expected_articles": ["222"],
+      "category": "corrupcion",
+      "difficulty": "medium",
+      "question_type": "factual_lookup",
+      "notes": "Art. 222 distinguishes penalties for servidor público vs. corruptor. Answer should address the public servant side."
+    },
+    {
+      "id": "q020",
+      "question": "¿Qué es el peculado según el código penal federal?",
+      "expected_answer": "Comete peculado todo servidor público que para usos propios o ajenos distraiga de su objeto dinero, valores, fincas o cualquier otra cosa perteneciente al Estado o a un particular si se le hubieren encomendado por razón de su cargo (artículo 223).",
+      "expected_articles": ["223"],
+      "category": "corrupcion",
+      "difficulty": "medium",
+      "question_type": "factual_lookup",
+      "notes": "Art. 223. Requires server público status; covers diverting public or entrusted private funds."
+    },
+    {
+      "id": "q021",
+      "question": "¿Cuál es la pena por narcotráfico según el código penal federal?",
+      "expected_answer": "A quien produzca, transporte, trafique, comercie, suministre aun gratuitamente o distribuya narcóticos se le impondrán de diez a veinticinco años de prisión y de cien a quinientos días multa (artículo 194 del Código Penal Federal). Las penas varían según el narcótico y la cantidad.",
+      "expected_articles": ["194"],
+      "category": "salud",
+      "difficulty": "medium",
+      "question_type": "factual_lookup",
+      "notes": "Art. 194 covers the primary narcotrafficking offense. The 10–25 year range is central."
+    },
+    {
+      "id": "q022",
+      "question": "¿Qué es el secuestro exprés y cuál es su pena?",
+      "expected_answer": "El secuestro exprés consiste en la privación de la libertad de una persona con el propósito de obtener dinero u otro beneficio de forma inmediata (generalmente en horas o pocos días), sin las características del secuestro clásico. El artículo 366 TER establece una pena de quince a veinticinco años de prisión.",
+      "expected_articles": ["366 TER"],
+      "category": "libertad",
+      "difficulty": "medium",
+      "question_type": "factual_lookup",
+      "notes": "Art. 366 TER. Requires distinguishing from classical secuestro (Art. 366)."
+    },
+    {
+      "id": "q023",
+      "question": "¿Cuál es la pena por lesiones que producen cicatriz permanente en el rostro?",
+      "expected_answer": "Si la lesión deja cicatriz en la cara perpetuamente notable, o disminuye alguna facultad o el normal funcionamiento de un órgano, o deja perturbación permanente de alguna función normal del cuerpo, se impondrán de tres a cinco años de prisión (artículo 291).",
+      "expected_articles": ["291"],
+      "category": "lesiones",
+      "difficulty": "medium",
+      "question_type": "factual_lookup",
+      "notes": "Art. 291 covers permanent facial scarring. Answer must include the 3–5 year range."
+    },
+    {
+      "id": "q024",
+      "question": "¿Cuál es la pena por daño en propiedad ajena?",
+      "expected_answer": "Al que por cualquier medio dañe, destruya o deteriore cosa ajena se le impondrá de tres meses a cinco años de prisión y pago del daño causado. La pena varía según el monto del daño (artículo 399).",
+      "expected_articles": ["399"],
+      "category": "patrimonio",
+      "difficulty": "medium",
+      "question_type": "factual_lookup",
+      "notes": "Art. 399. Penalty includes repair of damage; scale varies by amount."
+    },
+    {
+      "id": "q025",
+      "question": "¿Qué es el hostigamiento sexual según el código penal federal?",
+      "expected_answer": "Comete hostigamiento sexual quien con fines lascivos asedie reiteradamente a persona de cualquier sexo, valiéndose de su posición jerárquica derivada de sus relaciones laborales, docentes, domésticas, religiosas o cualquiera otra que implique subordinación (artículo 259 Bis). La sanción incluye trabajo comunitario o prisión.",
+      "expected_articles": ["259 BIS"],
+      "category": "sexual",
+      "difficulty": "medium",
+      "question_type": "factual_lookup",
+      "notes": "Art. 259 Bis. Key: reiteración, posición jerárquica, fines lascivos. Distinct from abuso sexual."
+    },
+
+    {
+      "id": "q026",
+      "question": "¿Cuál es la diferencia entre robo y abuso de confianza?",
+      "expected_answer": "El robo (artículo 367) consiste en apoderarse de una cosa mueble ajena sin consentimiento, sin que exista relación previa de entrega. El abuso de confianza (artículo 382) requiere que la cosa ya estuviera en poder del autor porque se la habían transmitido en tenencia (no en dominio). La diferencia fundamental es la preexistencia de una relación de confianza y la entrega voluntaria de la cosa: en el abuso de confianza la víctima confió el bien al autor.",
+      "expected_articles": ["367", "382"],
+      "category": "patrimonio",
+      "difficulty": "medium",
+      "question_type": "comparison",
+      "notes": "Requires synthesizing Arts. 367 and 382. The tenencia vs. apoderamiento distinction is the key legal point."
+    },
+    {
+      "id": "q027",
+      "question": "¿En qué se diferencia el homicidio calificado del homicidio simple?",
+      "expected_answer": "El homicidio simple (artículo 307) es la privación de la vida sin circunstancias agravantes, con pena de 12 a 24 años. El homicidio calificado (artículo 315) concurre cuando se actúa con premeditación, ventaja, alevosía o traición, elevando la pena a 20 a 40 años de prisión. Las calificativas demuestran mayor culpabilidad y planificación del agente.",
+      "expected_articles": ["307", "315"],
+      "category": "homicidio",
+      "difficulty": "medium",
+      "question_type": "comparison",
+      "notes": "Arts. 307 vs 315. Answer must mention at least two calificativas and the penalty difference."
+    },
+    {
+      "id": "q028",
+      "question": "¿Cuál es la diferencia entre violación y estupro?",
+      "expected_answer": "La violación (artículo 265) implica cópula obtenida mediante violencia física o moral, sin importar la edad de la víctima. El estupro (artículo 267) implica cópula con persona de 15 a 18 años obtenida mediante engaño, sin violencia. La violación tiene pena de 8 a 20 años; el estupro de 1 a 6 años. El mecanismo (violencia vs. engaño) y el rango de edad de la víctima son las distinciones clave.",
+      "expected_articles": ["265", "267"],
+      "category": "sexual",
+      "difficulty": "medium",
+      "question_type": "comparison",
+      "notes": "Core distinction: violencia vs. engaño, and the age window of the victim in estupro."
+    },
+    {
+      "id": "q029",
+      "question": "¿En qué se diferencia el secuestro de la privación ilegal de la libertad?",
+      "expected_answer": "La privación ilegal de la libertad (artículo 364) es la detención arbitraria de una persona sin justificación legal, con pena de 6 meses a 3 años. El secuestro (artículo 366) agrega el propósito de obtener rescate, presionar a la autoridad o causar daño, con pena de 15 a 40 años. El elemento diferenciador es el ánimo de lucro o la intención extorsiva en el secuestro.",
+      "expected_articles": ["364", "366"],
+      "category": "libertad",
+      "difficulty": "medium",
+      "question_type": "comparison",
+      "notes": "The ánimo de lucro or extortive purpose is what elevates privación ilegal to secuestro."
+    },
+    {
+      "id": "q030",
+      "question": "¿Cuál es la diferencia entre fraude y robo?",
+      "expected_answer": "En el robo (artículo 367) el autor se apodera de la cosa sin consentimiento de la víctima, usando la fuerza o la clandestinidad. En el fraude (artículo 386) el autor obtiene la cosa o el lucro mediante engaño o aprovechamiento del error de la víctima, quien la entrega voluntariamente aunque viciada por el dolo. El medio comisivo —apoderamiento forzoso vs. inducción al error— es la distinción central.",
+      "expected_articles": ["367", "386"],
+      "category": "patrimonio",
+      "difficulty": "medium",
+      "question_type": "comparison",
+      "notes": "Key: apoderamiento sin consentimiento (robo) vs. consentimiento viciado por engaño (fraude)."
+    },
+    {
+      "id": "q031",
+      "question": "¿En qué se diferencia el cohecho del peculado?",
+      "expected_answer": "El cohecho (artículo 222) ocurre cuando el servidor público solicita o recibe un beneficio indebido de un particular a cambio de realizar u omitir un acto de sus funciones. El peculado (artículo 223) ocurre cuando el servidor público distrae o apropia fondos o bienes públicos para beneficio propio o de terceros, sin intervención de un corruptor externo. El cohecho implica una transacción bilateral; el peculado es unilateral.",
+      "expected_articles": ["222", "223"],
+      "category": "corrupcion",
+      "difficulty": "medium",
+      "question_type": "comparison",
+      "notes": "Bilateral (bribery) vs. unilateral (embezzlement) is the key conceptual distinction."
+    },
+    {
+      "id": "q032",
+      "question": "¿Cuál es la diferencia entre homicidio doloso y homicidio culposo?",
+      "expected_answer": "El homicidio doloso implica intención de privar de la vida (artículo 302 en relación con el artículo 9 sobre delitos dolosos). El homicidio culposo (imprudencial) ocurre por negligencia, imprudencia o falta de cuidado, sin intención de matar. Los artículos 60 y concordantes regulan los delitos culposos. La pena del doloso es significativamente mayor a la del culposo.",
+      "expected_articles": ["302", "307", "60"],
+      "category": "homicidio",
+      "difficulty": "medium",
+      "question_type": "comparison",
+      "notes": "Must distinguish dolo (intent) from culpa (negligence). Art. 60 governs culpous penalties."
+    },
+    {
+      "id": "q033",
+      "question": "¿En qué se diferencian la violación y el abuso sexual?",
+      "expected_answer": "El abuso sexual (artículo 260) implica actos erótico-sexuales sin consentimiento que no constituyen cópula. La violación (artículo 265) requiere específicamente cópula realizada mediante violencia. El abuso sexual tiene pena de seis meses a cuatro años; la violación de 8 a 20 años. La distinción central es la ejecución de la cópula.",
+      "expected_articles": ["260", "265"],
+      "category": "sexual",
+      "difficulty": "medium",
+      "question_type": "comparison",
+      "notes": "Cópula is the threshold distinction. Both require lack of consent."
+    },
+    {
+      "id": "q034",
+      "question": "¿Cuál es la diferencia entre fraude y abuso de confianza?",
+      "expected_answer": "En el fraude (artículo 386) el autor engaña a la víctima para obtener una cosa o lucro; el engaño precede a la entrega. En el abuso de confianza (artículo 382) la cosa ya fue entregada voluntariamente al autor (tenencia legítima), y es sólo después cuando la dispone en perjuicio del dueño. En el fraude el engaño es el medio para obtener la cosa; en el abuso de confianza la cosa fue obtenida sin dolo inicial.",
+      "expected_articles": ["382", "386"],
+      "category": "patrimonio",
+      "difficulty": "hard",
+      "question_type": "comparison",
+      "notes": "Subtle distinction: timing of the fraudulent intent relative to the delivery of the asset."
+    },
+    {
+      "id": "q035",
+      "question": "¿En qué se diferencian las lesiones simples de las lesiones calificadas?",
+      "expected_answer": "Las lesiones simples son las que se causan sin circunstancias agravantes (artículos 289 a 293), clasificadas por tiempo de curación y consecuencias. Las lesiones calificadas (artículo 297) son aquellas en que concurren las calificativas del homicidio (premeditación, ventaja, alevosía o traición), lo que incrementa la pena en una proporción fijada por el código. Las mismas calificativas que agravan el homicidio operan para las lesiones.",
+      "expected_articles": ["289", "290", "291", "292", "297"],
+      "category": "lesiones",
+      "difficulty": "hard",
+      "question_type": "comparison",
+      "notes": "Art. 297 cross-references the homicidio calificativas. Requires understanding the calificativas system."
+    },
+    {
+      "id": "q036",
+      "question": "¿Cuál es la diferencia entre el homicidio en riña y el homicidio simple?",
+      "expected_answer": "El homicidio simple (artículo 307) es la privación intencional de la vida con pena de 12 a 24 años. El homicidio en riña (artículo 308) considera que ambas partes han acordado pelear, lo que atenúa la pena: al que mate en riña se le impondrá de ocho a trece años si fue provocador, o de seis a diez años si fue provocado. La riña previa actúa como circunstancia atenuante.",
+      "expected_articles": ["307", "308"],
+      "category": "homicidio",
+      "difficulty": "medium",
+      "question_type": "comparison",
+      "notes": "Art. 308 creates two sub-categories (provocador vs. provocado) with different penalties."
+    },
+    {
+      "id": "q037",
+      "question": "¿En qué se diferencia el robo simple del robo calificado?",
+      "expected_answer": "El robo simple (artículo 370) impone penas graduadas según el valor de lo robado. El robo calificado (artículo 372) concurre cuando se comete con violencia, portando armas, en pandilla, en casa habitación o en circunstancias que demuestran mayor peligrosidad, aumentando la pena en una tercera parte hasta en dos tercios más. Las calificativas reflejan la forma de ejecución más violenta o invasiva.",
+      "expected_articles": ["370", "372"],
+      "category": "robo",
+      "difficulty": "medium",
+      "question_type": "comparison",
+      "notes": "Arts. 370 vs. 372. Must mention the proportional increase (1/3 to 2/3 more)."
+    },
+    {
+      "id": "q038",
+      "question": "¿En qué se diferencia el encubrimiento de la participación en el delito?",
+      "expected_answer": "La participación delictiva (artículo 13) ocurre antes o durante la comisión del delito: incluye autores, coautores, cómplices e instigadores que intervienen en la preparación o ejecución. El encubrimiento (artículo 400) sucede después de consumado el delito: quien ayuda al responsable a eludir la justicia o recibe objetos del delito sin haber participado en él. El momento de intervención es la diferencia fundamental.",
+      "expected_articles": ["13", "400"],
+      "category": "encubrimiento",
+      "difficulty": "hard",
+      "question_type": "comparison",
+      "notes": "Temporal distinction (before/during vs. after) is the core. Art. 13 covers all forms of participation."
+    },
+    {
+      "id": "q039",
+      "question": "¿Cuál es la diferencia entre homicidio y lesiones que producen la muerte?",
+      "expected_answer": "El homicidio (artículo 302) requiere que el agente haya tenido la intención de privar de la vida o que la muerte fuera el resultado previsible de su conducta (dolo directo o eventual). Las lesiones que producen la muerte (artículo 293) se configuran cuando la intención era sólo lesionar y la muerte ocurre como consecuencia no planeada; la pena es de seis a diez años. En el homicidio doloso la muerte está dentro del plan del autor.",
+      "expected_articles": ["293", "302", "307"],
+      "category": "lesiones",
+      "difficulty": "hard",
+      "question_type": "comparison",
+      "notes": "Art. 293 is often confused with homicidio. Requires understanding dolus eventualis and the resulting death."
+    },
+    {
+      "id": "q040",
+      "question": "¿Cuál es la diferencia entre extorsión y robo con violencia?",
+      "expected_answer": "El robo con violencia (artículo 372) implica apoderarse de bienes usando fuerza física o amenaza inmediata en el momento del hecho. La extorsión (artículo 390) implica obligar a la víctima mediante amenazas (frecuentemente diferidas) a dar, hacer o tolerar algo para obtener un lucro; la entrega puede ocurrir fuera de la presencia del extorsionador. La extorsión puede no involucrar bienes presentes ni contacto físico.",
+      "expected_articles": ["372", "390"],
+      "category": "patrimonio",
+      "difficulty": "hard",
+      "question_type": "comparison",
+      "notes": "Simultaneidad vs. amenaza diferida. Extorsión can be ongoing; robo is in the moment."
+    },
+
+    {
+      "id": "q041",
+      "question": "¿Cuáles son las calificativas del homicidio y cómo las define el código penal?",
+      "expected_answer": "El artículo 315 establece que el homicidio calificado concurre con premeditación, ventaja, alevosía o traición. El artículo 316 define ventaja (cuando el activo no corre riesgo). El artículo 317 define alevosía (aprovechando el estado de indefensión). El artículo 318 define premeditación (deliberación previa). El artículo 319 define traición (violando la confianza). La concurrencia de cualquiera eleva la pena a 20–40 años.",
+      "expected_articles": ["315", "316", "317", "318", "319"],
+      "category": "homicidio",
+      "difficulty": "hard",
+      "question_type": "multi_article",
+      "notes": "Requires synthesizing five articles (315–319). Each calificativa has its own definition article."
+    },
+    {
+      "id": "q042",
+      "question": "¿Cuáles son todos los casos de violación equiparada reconocidos por el código penal?",
+      "expected_answer": "El artículo 266 equipara a violación: I) la cópula con menor de 15 años; II) la cópula con persona sin capacidad de comprender el significado del hecho; III) la cópula obtenida de persona privada de sentido o que por cualquier causa no puede resistir. El artículo 266 Bis añade agravantes como que el autor sea pariente, maestro o tenga autoridad sobre la víctima, o que se cometa en pandilla.",
+      "expected_articles": ["265", "266", "266 BIS"],
+      "category": "sexual",
+      "difficulty": "hard",
+      "question_type": "multi_article",
+      "notes": "Three articles needed. Art. 266 BIS lists circumstances that increase penalty by one-half."
+    },
+    {
+      "id": "q043",
+      "question": "¿Qué artículos regulan el secuestro, cuáles son sus modalidades y agravantes?",
+      "expected_answer": "El artículo 366 establece el secuestro base (15–40 años) cuando se priva de la libertad con propósito de rescate o presión. El artículo 366 Bis eleva la pena en una mitad más cuando la víctima es menor de 18 años, mayor de 60, embarazada o con discapacidad, o cuando se cause lesión o muerte. El artículo 366 Ter tipifica el secuestro exprés (15–25 años). También contempla reducción de pena si el secuestrador libera a la víctima sin daño antes del primer requerimiento.",
+      "expected_articles": ["366", "366 BIS", "366 TER"],
+      "category": "libertad",
+      "difficulty": "hard",
+      "question_type": "multi_article",
+      "notes": "Requires three articles. The penalty reduction for voluntary release is a distinctive nuance."
+    },
+    {
+      "id": "q044",
+      "question": "¿Cuáles son las distintas formas de fraude equiparado que reconoce el código penal?",
+      "expected_answer": "El artículo 387 enumera diversas formas de fraude equiparado, entre ellas: fingir bienes, título o crédito; alterar pesas y medidas; prometer mediante dádivas o fraude el cargo de otro; alterar contratos u obligaciones; cobrar más de lo acordado; obtener firmas en blanco; defraudar mediante herencia; vender lo mismo a dos personas. Cada fracción describe una modalidad específica de obtener lucro ilícito mediante engaño.",
+      "expected_articles": ["386", "387"],
+      "category": "fraude",
+      "difficulty": "hard",
+      "question_type": "multi_article",
+      "notes": "Art. 387 has many fractions. Answer need not list all but should demonstrate breadth."
+    },
+    {
+      "id": "q045",
+      "question": "¿Cuáles son todas las circunstancias que agravan el robo y cómo afectan la pena?",
+      "expected_answer": "El artículo 372 agrava el robo cuando se comete con violencia, en pandilla, portando armas o en casa habitación, incrementando la pena en una tercera parte a dos tercios. El artículo 374 prevé pena de 3 a 9 años adicionales por robo en casa habitación. El artículo 376 y 376 Bis castigan el robo de vehículos con penas de hasta 20 años cuando hay persona dentro. El artículo 370 establece la pena base escalonada por valor.",
+      "expected_articles": ["370", "372", "374", "376", "376 BIS"],
+      "category": "robo",
+      "difficulty": "hard",
+      "question_type": "multi_article",
+      "notes": "Five articles needed. Answer should show the cumulative effect of aggravants."
+    },
+    {
+      "id": "q046",
+      "question": "¿Qué artículos regulan los delitos contra la salud y cuáles son sus penas principales?",
+      "expected_answer": "El artículo 193 define los narcóticos objeto de los delitos. El artículo 194 tipifica el narcotráfico (producción, transporte, comercio) con pena de 10 a 25 años. El artículo 195 sanciona conductas menores (posesión con fin de tráfico) con 5 a 15 años. El artículo 195 Bis permite como alternativa el tratamiento médico cuando la cantidad corresponde a consumo personal. El artículo 196 agrava las penas cuando el delito es cometido por servidores públicos.",
+      "expected_articles": ["193", "194", "195", "195 BIS", "196"],
+      "category": "salud",
+      "difficulty": "hard",
+      "question_type": "multi_article",
+      "notes": "Requires at least four articles across the health crimes title."
+    },
+    {
+      "id": "q047",
+      "question": "¿Cuáles son todos los delitos de naturaleza sexual tipificados en el código penal federal?",
+      "expected_answer": "El código tipifica: hostigamiento sexual (artículo 259 Bis), abuso sexual (artículo 260), abuso sexual agravado contra menor (artículo 261), violación (artículo 265), violación equiparada (artículo 266), violación con agravantes (artículo 266 Bis), estupro (artículo 267) y rapto (artículo 268). Cada delito tiene pena distinta, con la violación como el más severamente penado dentro del grupo.",
+      "expected_articles": ["259 BIS", "260", "261", "265", "266", "266 BIS", "267", "268"],
+      "category": "sexual",
+      "difficulty": "hard",
+      "question_type": "multi_article",
+      "notes": "Requires cataloguing the entire sexual crimes section. A comprehensive answer is expected."
+    },
+    {
+      "id": "q048",
+      "question": "¿Cuáles son los delitos de servidores públicos contemplados en el Título Décimo del código penal?",
+      "expected_answer": "El Título Décimo contempla: ejercicio indebido del servicio público (artículo 214), abuso de autoridad (artículo 215), coalición de servidores públicos (artículo 216), uso indebido de atribuciones y facultades (artículo 217), concusión (artículo 218), intimidación (artículo 219), ejercicio abusivo de funciones (artículo 220), tráfico de influencias (artículo 221), cohecho (artículo 222), peculado (artículo 223) y enriquecimiento ilícito (artículo 224).",
+      "expected_articles": ["214", "215", "216", "217", "218", "219", "220", "221", "222", "223", "224"],
+      "category": "corrupcion",
+      "difficulty": "hard",
+      "question_type": "multi_article",
+      "notes": "Requires cataloguing Title X. Answer should demonstrate knowledge of the full suite of public corruption crimes."
+    },
+    {
+      "id": "q049",
+      "question": "¿Cuáles son todas las clasificaciones de lesiones y sus penas respectivas?",
+      "expected_answer": "El código clasifica las lesiones según gravedad: menos de 15 días de curación (artículo 289): 3 a 8 meses o multa; más de 15 días (artículo 290): 1 a 3 años; cicatriz permanente en rostro o disfunción permanente de órgano (artículo 291): 3 a 5 años; pérdida de miembro, órgano o función (artículo 292): 5 a 8 años; lesiones que producen la muerte (artículo 293): 6 a 10 años. Las culposas tienen penas reducidas (artículo 294).",
+      "expected_articles": ["288", "289", "290", "291", "292", "293", "294"],
+      "category": "lesiones",
+      "difficulty": "hard",
+      "question_type": "multi_article",
+      "notes": "Requires mapping the full ladder of lesiones from Arts. 288–294."
+    },
+    {
+      "id": "q050",
+      "question": "¿Cuáles son las causas que excluyen la responsabilidad penal según el código penal federal?",
+      "expected_answer": "El artículo 15 establece que el delito se excluye cuando: I) el acto no fue voluntario (caso fortuito); II) falta el elemento del tipo; III-IV) actúa en legítima defensa propia o de terceros; V) existe estado de necesidad que justifica el daño; VI) hay miedo grave; VII) actúa en cumplimiento de un deber o ejercicio de un derecho; VIII) existe error de tipo invencible o error de prohibición; IX) existe inimputabilidad; X) hay error en el actuar conforme a derecho.",
+      "expected_articles": ["15"],
+      "category": "general",
+      "difficulty": "hard",
+      "question_type": "multi_article",
+      "notes": "Art. 15 lists the full exhaustive list of defenses. A complete answer must cover at least legítima defensa, estado de necesidad, and caso fortuito."
+    },
+
+    {
+      "id": "q051",
+      "question": "¿Qué pena corresponde si el homicidio se comete con premeditación y ventaja simultáneamente?",
+      "expected_answer": "Cuando el homicidio se comete con cualquiera de las calificativas (premeditación, ventaja, alevosía o traición), independientemente del número que concurran, se configura el homicidio calificado del artículo 315 con pena de 20 a 40 años. La concurrencia de varias calificativas no suma penas adicionales, sino que todas llevan al mismo tipo calificado; sin embargo, el juez puede individualizar dentro del rango considerando la mayor culpabilidad.",
+      "expected_articles": ["315", "316", "318"],
+      "category": "homicidio",
+      "difficulty": "hard",
+      "question_type": "conditional",
+      "notes": "Multiple calificativas don't double the penalty; they all lead to the same qualified type. This nuance is often misunderstood."
+    },
+    {
+      "id": "q052",
+      "question": "¿Cuál es la pena por secuestro si la víctima es menor de edad?",
+      "expected_answer": "Cuando la víctima del secuestro es menor de dieciocho años, el artículo 366 Bis establece que la pena se aumenta en una mitad más de la pena base establecida en el artículo 366 (de 15 a 40 años). Esto puede traducirse en penas muy elevadas que exceden los 40 años.",
+      "expected_articles": ["366", "366 BIS"],
+      "category": "libertad",
+      "difficulty": "medium",
+      "question_type": "conditional",
+      "notes": "Art. 366 Bis: penalty increases by one half when victim is under 18."
+    },
+    {
+      "id": "q053",
+      "question": "¿Qué sucede si el secuestrador libera voluntariamente a la víctima sin causarle daño?",
+      "expected_answer": "El artículo 366 Bis contempla una reducción de pena cuando el secuestrador libera espontáneamente a la víctima, sin haber recibido rescate y sin haberle causado daño, antes de que la autoridad lo requiera formalmente. En ese caso el juzgador puede imponer una pena reducida. Esta atenuante busca incentivar la liberación de la víctima.",
+      "expected_articles": ["366 BIS"],
+      "category": "libertad",
+      "difficulty": "hard",
+      "question_type": "conditional",
+      "notes": "This sentencing discount is a distinctive feature of the secuestro regime. Tests knowledge of the mitigating clause."
+    },
+    {
+      "id": "q054",
+      "question": "¿Cuál es la pena por violación si la víctima es menor de quince años?",
+      "expected_answer": "Cuando la violación se comete contra persona menor de quince años, el artículo 266 Bis establece que la pena se aumenta en una mitad más sobre la pena de 8 a 20 años prevista en el artículo 265. Adicionalmente se añaden penas de multa e inhabilitación para quienes tengan relación de autoridad con la víctima (padre, tutor, maestro).",
+      "expected_articles": ["265", "266 BIS"],
+      "category": "sexual",
+      "difficulty": "medium",
+      "question_type": "conditional",
+      "notes": "Art. 266 Bis: 50% penalty increase when victim is under 15. Must distinguish from basic violación (Art. 265)."
+    },
+    {
+      "id": "q055",
+      "question": "¿Qué pena corresponde al robo cometido en casa habitación cuando el autor porta un arma?",
+      "expected_answer": "El robo en casa habitación (artículo 374) por sí mismo ya agrava la pena. Si además se porta arma de fuego o instrumento peligroso (artículo 372), la pena se incrementa aún más. La combinación de ambas calificativas (casa habitación + arma) resulta en las penas más severas dentro del catálogo de robo, pudiendo alcanzar de seis a doce años o más según el valor sustraído.",
+      "expected_articles": ["370", "372", "374"],
+      "category": "robo",
+      "difficulty": "hard",
+      "question_type": "conditional",
+      "notes": "Requires understanding cumulative effect of two independent aggravants from Arts. 372 and 374."
+    },
+    {
+      "id": "q056",
+      "question": "¿Qué pena se aplica si el fraude es cometido por un servidor público en ejercicio de sus funciones?",
+      "expected_answer": "Cuando el fraude es cometido por un servidor público en abuso de sus funciones, el artículo 387 (fraude equiparado) eleva la pena. Además, el artículo 212 establece que los servidores públicos que cometan delitos en ejercicio de sus funciones pueden ser sancionados con destitución e inhabilitación. La pena de prisión para el fraude se determina por el monto defraudado conforme al artículo 386.",
+      "expected_articles": ["212", "386", "387"],
+      "category": "fraude",
+      "difficulty": "hard",
+      "question_type": "conditional",
+      "notes": "Requires linking fraud penalty (Art. 386) with public servant aggravant (Art. 212 and Art. 387)."
+    },
+    {
+      "id": "q057",
+      "question": "¿Cómo se agrava la pena de extorsión cuando se utilizan medios de comunicación?",
+      "expected_answer": "El artículo 390 establece que cuando la extorsión se comete a través de amenazas realizadas por teléfono, correo electrónico u otros medios de comunicación, la pena se incrementa. Asimismo, si la extorsión es cometida por dos o más personas, la pena también se duplica o aumenta proporcionalmente. Estas agravantes reconocen el mayor alcance y daño que producen estos medios.",
+      "expected_articles": ["390"],
+      "category": "extorsion",
+      "difficulty": "medium",
+      "question_type": "conditional",
+      "notes": "Art. 390 has aggravant clauses for organized perpetration and use of communications."
+    },
+    {
+      "id": "q058",
+      "question": "¿Cuál es la consecuencia penal cuando las lesiones causadas producen la muerte de la víctima?",
+      "expected_answer": "Cuando las lesiones producen la muerte de la víctima y el autor no tenía intención de matar, se aplica el artículo 293 que prevé una pena de seis a diez años de prisión. Esto es distinto del homicidio doloso: aquí el dolo era de lesionar, no de matar. Si hubiera intención de matar, se configuraría homicidio (artículos 302 y 307).",
+      "expected_articles": ["293", "302"],
+      "category": "lesiones",
+      "difficulty": "medium",
+      "question_type": "conditional",
+      "notes": "Art. 293 vs. Art. 302 — intent matters. Answer must distinguish dolo de lesionar from dolo de matar."
+    },
+    {
+      "id": "q059",
+      "question": "¿Cuándo aplica la atenuante de emoción violenta en el homicidio y cómo reduce la pena?",
+      "expected_answer": "La emoción violenta (artículo 310) opera como atenuante cuando el homicidio es cometido en estado de perturbación emocional grave provocada por la conducta de la víctima y bajo circunstancias que hagan explicable la reacción. La pena se reduce a la mitad del mínimo y a la mitad del máximo de la pena base. No aplica cuando concurren calificativas como premeditación.",
+      "expected_articles": ["310"],
+      "category": "homicidio",
+      "difficulty": "hard",
+      "question_type": "conditional",
+      "notes": "Art. 310. The test is proportionality of the emotional reaction. Cannot co-exist with premeditation."
+    },
+    {
+      "id": "q060",
+      "question": "¿Cómo afecta la reincidencia la pena por delitos contra la salud?",
+      "expected_answer": "La reincidencia en delitos contra la salud (artículos 64 a 66 en relación con el artículo 194) implica que el juez puede aumentar la pena hasta en una tercera parte más del máximo legal. El artículo 64 define la reincidencia como la comisión de un nuevo delito después de haber cumplido condena por otro anterior. Para delitos contra la salud la reincidencia agrava especialmente por tratarse de delitos de alto impacto social.",
+      "expected_articles": ["64", "194"],
+      "category": "salud",
+      "difficulty": "hard",
+      "question_type": "conditional",
+      "notes": "Requires linking general reincidencia rules (Arts. 64–66) to the specific narcotics penalty (Art. 194)."
+    },
+
+    {
+      "id": "q061",
+      "question": "¿Qué dice el código penal federal sobre el pago de impuestos y las obligaciones fiscales?",
+      "expected_answer": "",
+      "expected_articles": [],
+      "category": "out_of_scope",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_oos",
+      "notes": "Tax obligations are in the Código Fiscal de la Federación and the Ley del ISR, not the Código Penal. System should state it cannot answer from this document."
+    },
+    {
+      "id": "q062",
+      "question": "¿Cuál es el procedimiento legal para solicitar el divorcio en México?",
+      "expected_answer": "",
+      "expected_articles": [],
+      "category": "out_of_scope",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_oos",
+      "notes": "Divorce is governed by the Código Civil Federal and state civil codes, not the Código Penal. System must decline."
+    },
+    {
+      "id": "q063",
+      "question": "¿Cómo se fija y calcula la pensión alimenticia en caso de separación conyugal?",
+      "expected_answer": "",
+      "expected_articles": [],
+      "category": "out_of_scope",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_oos",
+      "notes": "Child support/alimony calculation is in family law codes, not the CPF. The CPF only criminalizes non-payment (Art. 336) but does not establish calculation rules."
+    },
+    {
+      "id": "q064",
+      "question": "¿Qué establece el código penal sobre los contratos de compraventa?",
+      "expected_answer": "",
+      "expected_articles": [],
+      "category": "out_of_scope",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_oos",
+      "notes": "Contracts are civil/commercial law matters. The CPF only becomes relevant if fraud is involved."
+    },
+    {
+      "id": "q065",
+      "question": "¿Cuánto tiempo tiene el acusado para apelar una sentencia penal condenatoria?",
+      "expected_answer": "",
+      "expected_articles": [],
+      "category": "out_of_scope",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_oos",
+      "notes": "Appeal timelines are in the Código Nacional de Procedimientos Penales (CNPP), not the substantive CPF."
+    },
+    {
+      "id": "q066",
+      "question": "¿Qué dice el código penal federal sobre el derecho de huelga de los trabajadores?",
+      "expected_answer": "",
+      "expected_articles": [],
+      "category": "out_of_scope",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_oos",
+      "notes": "Labor rights including strikes are governed by the Ley Federal del Trabajo, not the CPF."
+    },
+    {
+      "id": "q067",
+      "question": "¿Cuáles son los requisitos para obtener libertad provisional bajo caución durante un proceso penal?",
+      "expected_answer": "",
+      "expected_articles": [],
+      "category": "out_of_scope",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_oos",
+      "notes": "Bail and provisional liberty are procedural matters regulated by the CNPP, not the substantive CPF."
+    },
+    {
+      "id": "q068",
+      "question": "¿Qué requisitos establece la ley para obtener o renovar una licencia de conducir?",
+      "expected_answer": "",
+      "expected_articles": [],
+      "category": "out_of_scope",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_oos",
+      "notes": "Driver's licenses are administrative/transit law matters. CPF only addresses vehicular crimes, not licensing."
+    },
+    {
+      "id": "q069",
+      "question": "¿Cuáles son las sanciones por no pagar el impuesto predial en el Distrito Federal?",
+      "expected_answer": "",
+      "expected_articles": [],
+      "category": "out_of_scope",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_oos",
+      "notes": "Property tax is a local administrative matter under Mexico City fiscal codes, not the CPF."
+    },
+    {
+      "id": "q070",
+      "question": "¿Cuáles son los derechos del consumidor que protege la ley mexicana?",
+      "expected_answer": "",
+      "expected_articles": [],
+      "category": "out_of_scope",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_oos",
+      "notes": "Consumer protection is governed by the Ley Federal de Protección al Consumidor (PROFECO), not the CPF."
+    },
+
+    {
+      "id": "q071",
+      "question": "¿Cuál es la pena específica por robo de datos personales o información digital?",
+      "expected_answer": "El código penal federal no tipifica expresamente el 'robo de datos digitales' como categoría autónoma. Los artículos 211 Bis 1 al 211 Bis 7 sancionan el acceso ilícito a sistemas informáticos y el uso indebido de equipos, pero no constituyen 'robo' en el sentido del artículo 367. Para datos personales existe la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. El sistema podría no encontrar una respuesta directa en el Código Penal.",
+      "expected_articles": ["211 BIS"],
+      "category": "informatica",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_tricky",
+      "notes": "Designed to trigger hallucination of a non-existent 'robo digital' article. Correct answer acknowledges limits; Art. 211 Bis covers computer access crimes but is not theft."
+    },
+    {
+      "id": "q072",
+      "question": "¿Contempla el código penal federal la pena de muerte para algún delito?",
+      "expected_answer": "No. La pena de muerte fue abolida en México mediante reforma constitucional publicada en el Diario Oficial de la Federación el 9 de diciembre de 2005, que modificó el artículo 22 de la Constitución. El Código Penal Federal no contempla la pena de muerte para ningún delito. La pena máxima es de prisión de hasta setenta años (o más en casos específicos de delincuencia organizada).",
+      "expected_articles": [],
+      "category": "general",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_tricky",
+      "notes": "Designed to test if the model incorrectly asserts that death penalty exists. The 2005 constitutional reform abolished it. Model should clearly say it does not exist in current law."
+    },
+    {
+      "id": "q073",
+      "question": "¿Qué artículo del código penal federal regula el ciberacoso o acoso en redes sociales?",
+      "expected_answer": "El Código Penal Federal no contiene un artículo que tipifique expresamente el 'ciberacoso' o el acoso en redes sociales como delito autónomo a nivel federal. Algunas entidades federativas han introducido este delito en sus códigos locales. A nivel federal, conductas relacionadas podrían encuadrarse en hostigamiento sexual (artículo 259 Bis) si cumplen sus elementos, o en delitos informáticos (artículos 211 Bis), pero no existe un tipo penal específico de ciberacoso en el CPF.",
+      "expected_articles": ["259 BIS", "211 BIS"],
+      "category": "informatica",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_tricky",
+      "notes": "Model may hallucinate a specific 'ciberacoso' article. Correct answer explains the regulatory gap at federal level."
+    },
+    {
+      "id": "q074",
+      "question": "¿Cuáles son las penas por portación de armas de fuego según el código penal federal?",
+      "expected_answer": "La portación, fabricación y tráfico de armas de fuego están regulados principalmente por la Ley Federal de Armas de Fuego y Explosivos (LFAFE), no directamente por el Código Penal Federal. La LFAFE establece penas de 5 a 10 años por portación de arma de fuego de uso exclusivo del Ejército sin permiso. El CPF puede agravar penas de otros delitos cuando se usa arma de fuego (artículo 372 en robo), pero no es la ley principal que regula la portación.",
+      "expected_articles": ["372"],
+      "category": "armas",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_tricky",
+      "notes": "Model may confuse LFAFE with CPF and cite incorrect CPF articles for weapons possession. Correct answer clarifies which law governs."
+    },
+    {
+      "id": "q075",
+      "question": "¿Qué establece el código penal federal sobre el crimen organizado y sus penas?",
+      "expected_answer": "El crimen organizado o delincuencia organizada está regulado principalmente por la Ley Federal contra la Delincuencia Organizada (LFDO) de 1996, no por el Código Penal Federal de manera autónoma. El CPF tipifica la 'asociación delictuosa' en el artículo 164, pero esta figura es distinta y menos severa que las figuras de la LFDO. La LFDO prevé penas de 8 a 50 años. El modelo podría confundir estas leyes y atribuir erróneamente artículos del CPF.",
+      "expected_articles": ["164"],
+      "category": "general",
+      "difficulty": "adversarial",
+      "question_type": "adversarial_tricky",
+      "notes": "Organized crime is primarily in LFDO, not CPF. Art. 164 CPF covers 'asociación delictuosa' which is related but not equivalent. Model may hallucinate CPF articles that don't exist."
+    }
+
+  ]
+}

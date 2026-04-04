@@ -1,0 +1,83 @@
+# =============================================================================
+# Legal Intelligence Engine — Docker Compose
+#
+# Services
+# --------
+# api        FastAPI RAG server (port 8000)
+# dashboard  Streamlit monitoring dashboard (port 8501)
+#
+# Usage
+# -----
+#   docker compose up --build          # build and start both services
+#   docker compose up api              # API only (skip dashboard)
+#   docker compose logs -f api         # tail API logs
+#
+# Required environment variables (set in .env):
+#   PINECONE_API_KEY, PINECONE_INDEX_NAME, ANTHROPIC_API_KEY, ADMIN_API_KEY
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # API — FastAPI RAG server
+  # ---------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      # SQLite request log — persisted between restarts
+      - ./data:/app/data
+      # Evaluation output files written by POST /v1/evaluate
+      - ./results:/app/results
+    restart: unless-stopped
+    # Health check using Python stdlib — no curl required in the slim image.
+    # start_period matches the Dockerfile HEALTHCHECK (cross-encoder load time).
+    healthcheck:
+      test:
+        - "CMD"
+        - "python"
+        - "-c"
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8000/v1/health')"
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+
+  # ---------------------------------------------------------------------------
+  # Dashboard — Streamlit monitoring UI
+  # ---------------------------------------------------------------------------
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    environment:
+      # Override API_URL so the dashboard reaches the API by service name.
+      # Docker's internal DNS resolves "api" to the API container's IP.
+      API_URL: "http://api:8000"
+      DB_PATH: "/app/data/requests.db"
+    volumes:
+      # Read-only: the dashboard only reads the SQLite log, never writes it.
+      - ./data:/app/data:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - "CMD"
+        - "python"
+        - "-c"
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')"
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3

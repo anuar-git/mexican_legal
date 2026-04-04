@@ -1,0 +1,36 @@
+# Python runtime artefacts
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Secrets — never copy into the image
+.env
+*.env.*
+
+# Raw source documents (large PDF; ingested to Pinecone, not needed at serve-time)
+data/raw/
+
+# Processed data and previous eval/results artefacts
+data/processed/
+data/requests.db
+results/
+
+# Development and CI files
+.git/
+.github/
+tests/
+docs/
+*.md
+
+# IDE and OS noise
+.idea/
+.vscode/
+*.DS_Store
