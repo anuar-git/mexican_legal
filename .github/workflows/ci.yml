@@ -1,0 +1,168 @@
+name: CI/CD
+
+# Trigger on pushes and PRs to master (the default branch for this repo).
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# Cancel any in-progress run on the same branch when a newer commit arrives.
+# Prevents redundant runs when pushing multiple commits quickly.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ---------------------------------------------------------------------------
+  # 1. Lint — ruff + mypy  (~1 min)
+  # Runs on every push and PR.  Fast feedback before heavier jobs start.
+  # ---------------------------------------------------------------------------
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"   # matches Dockerfile and local dev venv
+
+      # Install only the tools needed for static analysis.
+      # pydantic + pydantic-settings are included so mypy can type-check
+      # src/api/config.py without "missing stubs" false positives.
+      - run: pip install --quiet ruff mypy pydantic pydantic-settings
+
+      - name: ruff check
+        run: ruff check src/
+
+      - name: mypy
+        run: mypy src/ --ignore-missing-imports
+
+  # ---------------------------------------------------------------------------
+  # 2. Unit tests — pytest (no live APIs)  (~5 min)
+  # The "not integration" marker skips tests/retrieval/test_pipeline.py,
+  # which requires RUN_INTEGRATION=1 and live Pinecone + Anthropic keys.
+  # ---------------------------------------------------------------------------
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"             # built-in pip cache keyed on pyproject.toml hash
+
+      - run: pip install -e ".[test]"
+
+      - name: Run unit tests
+        run: pytest tests/ -v --cov=src --cov-report=xml -m "not integration"
+
+      - uses: codecov/codecov-action@v4
+        with:
+          file: coverage.xml
+        # Don't fail the build if Codecov is unreachable (token not configured)
+        continue-on-error: true
+
+  # ---------------------------------------------------------------------------
+  # 3. Docker build + smoke test  (~8 min, cached ~3 min)
+  # Runs after lint + test pass to avoid spending build time on broken code.
+  # Uses GitHub Actions layer cache so the PyTorch + HF model layers
+  # (~1 GB) are only downloaded on the first run; subsequent runs reuse them.
+  # ---------------------------------------------------------------------------
+  docker-build:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Buildx is required for --cache-from/--cache-to type=gha
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build API image
+        run: |
+          docker buildx build \
+            --cache-from type=gha \
+            --cache-to   type=gha,mode=max \
+            --load \
+            -t legal-intelligence:ci \
+            .
+
+      - name: Smoke test — container startup
+        run: |
+          # All three vars are required fields in pydantic-settings Settings();
+          # without PINECONE_INDEX_NAME the app crashes with ValidationError.
+          docker run -d --name test-api \
+            -e PINECONE_API_KEY=dummy \
+            -e PINECONE_INDEX_NAME=dummy \
+            -e ANTHROPIC_API_KEY=dummy \
+            -p 8000:8000 \
+            legal-intelligence:ci
+
+          # Poll GET /v1/health until uvicorn is ready (up to 90 s).
+          # The endpoint returns HTTP 200 even with dummy credentials
+          # (status: "degraded" — Pinecone probe fails but Anthropic key present).
+          echo "Waiting for /v1/health to respond..."
+          for i in $(seq 1 18); do
+            if curl -sf http://localhost:8000/v1/health; then
+              echo ""
+              echo "Container is responding."
+              break
+            fi
+            echo "  attempt $i/18 — retrying in 5 s..."
+            sleep 5
+          done
+
+          docker logs test-api
+
+          # Fail this step if the container exited (crashed) rather than running.
+          docker inspect test-api --format='{{.State.Status}}' | grep -q "^running$"
+
+  # ---------------------------------------------------------------------------
+  # 4. Evaluation — RAGAS + citation accuracy  (master only, ~10 min)
+  # Runs after lint + test pass but does NOT block on docker-build, since
+  # eval is a quality gate, not a deployment gate.
+  # Requires secrets: PINECONE_API_KEY, PINECONE_INDEX_NAME, ANTHROPIC_API_KEY
+  # ---------------------------------------------------------------------------
+  evaluate:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    env:
+      PINECONE_API_KEY:    ${{ secrets.PINECONE_API_KEY }}
+      PINECONE_INDEX_NAME: ${{ secrets.PINECONE_INDEX_NAME }}
+      ANTHROPIC_API_KEY:   ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      # Install runtime deps + eval extras (ragas, langchain-anthropic, pandas).
+      # The base install alone omits ragas, so RAGAS scoring would be silently
+      # skipped — use .[eval] to get full scoring.
+      - run: pip install -e ".[eval]"
+
+      - run: mkdir -p results
+
+      - name: Run evaluation
+        run: |
+          python scripts/evaluate.py \
+            --test-set data/evaluation/golden_test_set.json \
+            --output   results/latest.json \
+            --limit    10 \
+            --no-ragas
+          # --limit 10   : cap at 10 questions to control CI cost and runtime.
+          #                Remove (or raise) for a full regression run.
+          # --no-ragas   : skip the Claude-as-judge RAGAS calls to save ~$1/run.
+          #                Remove to get faithfulness / answer_relevance scores.
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eval-results
+          path: results/latest.json
+          retention-days: 30
