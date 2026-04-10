@@ -12,7 +12,7 @@ internal pipeline types to API shapes.
 from __future__ import annotations
 
 import statistics
-from typing import Optional
+from typing import Protocol, runtime_checkable
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -83,7 +83,7 @@ class QueryRequest(BaseModel):
             "¿Cuándo procede la libertad provisional bajo caución?",
         ],
     )
-    filters: Optional[dict] = Field(
+    filters: dict | None = Field(
         None,
         description=(
             "Optional Pinecone metadata filters. "
@@ -134,12 +134,12 @@ class EvalRequest(BaseModel):
         description="Relative or absolute path to the golden test set JSON file",
         examples=["data/evaluation/golden_set.json"],
     )
-    category: Optional[str] = Field(
+    category: str | None = Field(
         None,
         description="Filter evaluation to a specific question category",
         examples=["homicidio", "robo", "fraude", None],
     )
-    question_id: Optional[str] = Field(
+    question_id: str | None = Field(
         None,
         description="Run evaluation for a single question identified by its ID",
         examples=[None, "q-001", "q-042"],
@@ -216,7 +216,7 @@ class RetrievalMetadata(BaseModel):
     )
 
     @classmethod
-    def from_retrieval_result(cls, result: "RetrievalResultProtocol") -> RetrievalMetadata:
+    def from_retrieval_result(cls, result: RetrievalResultProtocol) -> RetrievalMetadata:
         """Build a RetrievalMetadata from an internal RetrievalResult.
 
         Args:
@@ -325,7 +325,7 @@ class QueryResponse(BaseModel):
     @classmethod
     def from_generation_result(
         cls,
-        result: "GenerationResultProtocol",
+        result: GenerationResultProtocol,
         total_time_ms: float,
     ) -> QueryResponse:
         """Build a QueryResponse from an internal GenerationResult.
@@ -414,7 +414,7 @@ class ErrorResponse(BaseModel):
         description="Short human-readable error category",
         examples=["Validation error", "Rate limit exceeded", "internal_error"],
     )
-    detail: Optional[str] = Field(
+    detail: str | None = Field(
         None,
         description="Extended description or validation detail",
         examples=[
@@ -431,22 +431,24 @@ class ErrorResponse(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Protocol stubs (for type-checker only — avoid circular imports at runtime)
+# Protocols (structural duck-typing — avoid circular imports at runtime)
 # ---------------------------------------------------------------------------
 
-# These are structural type hints used in the factory classmethods above.
-# At runtime the real objects (GenerationResult, RetrievalResult) are passed
-# in; no import of internal modules is needed here.
+# Using typing.Protocol lets mypy verify structural compatibility between the
+# internal pipeline objects (GenerationResult, RetrievalResult) and the API
+# factory classmethods without requiring a real import of internal modules.
 
 
-class RetrievalResultProtocol:  # pragma: no cover
+@runtime_checkable
+class RetrievalResultProtocol(Protocol):  # pragma: no cover
     candidates_retrieved: int
     chunks: list  # list[RetrievedChunk]
     retrieval_time_ms: float
     expanded_queries: list[str]
 
 
-class GenerationResultProtocol:  # pragma: no cover
+@runtime_checkable
+class GenerationResultProtocol(Protocol):  # pragma: no cover
     answer: str
     citations: list  # list[Citation]
     retrieval: RetrievalResultProtocol

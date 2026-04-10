@@ -18,7 +18,6 @@ Environment variables (loaded from .env):
 import logging
 import os
 import time
-from typing import Optional
 
 import anthropic
 from dotenv import load_dotenv
@@ -145,7 +144,7 @@ class Retriever:
             max_tokens=256,
             messages=[{"role": "user", "content": prompt}],
         )
-        raw = response.content[0].text.strip()
+        raw = response.content[0].text.strip()  # type: ignore[union-attr]
         alternatives = [line.strip() for line in raw.splitlines() if line.strip()][:3]
         expanded = [query] + alternatives
         logger.debug("Query expanded into %d variants: %s", len(expanded), expanded)
@@ -167,7 +166,7 @@ class Retriever:
     def _search_one(
         self,
         query: str,
-        metadata_filter: Optional[dict],
+        metadata_filter: dict | None,
     ) -> list[RetrievedChunk]:
         """Retrieve top_k_candidates chunks for a single query variant.
 
@@ -190,7 +189,7 @@ class Retriever:
         response = self._index.query(**kwargs)
 
         chunks: list[RetrievedChunk] = []
-        for match in response.matches:
+        for match in response.matches:  # type: ignore[union-attr]
             metadata = dict(match.metadata or {})
             text = metadata.pop("text", "")
             chunks.append(
@@ -206,7 +205,7 @@ class Retriever:
     def _hybrid_search(
         self,
         queries: list[str],
-        metadata_filter: Optional[dict],
+        metadata_filter: dict | None,
     ) -> list[RetrievedChunk]:
         """Search all query variants and return deduplicated candidates.
 
@@ -242,7 +241,7 @@ class Retriever:
         self,
         query: str,
         candidates: list[RetrievedChunk],
-        top_k: Optional[int] = None,
+        top_k: int | None = None,
     ) -> list[RetrievedChunk]:
         """Score all candidates with the cross-encoder; return top_k chunks.
 
@@ -263,10 +262,14 @@ class Retriever:
         pairs = [(query, c.text) for c in candidates]
         scores: list[float] = self._cross_encoder.predict(pairs).tolist()
 
-        for chunk, score in zip(candidates, scores):
+        for chunk, score in zip(candidates, scores, strict=True):
             chunk.rerank_score = score
 
-        ranked = sorted(candidates, key=lambda c: c.rerank_score, reverse=True)  # type: ignore[arg-type]
+        ranked = sorted(
+            candidates,
+            key=lambda c: c.rerank_score if c.rerank_score is not None else 0.0,
+            reverse=True,
+        )
         top = ranked[:k]
 
         logger.debug(
@@ -284,8 +287,8 @@ class Retriever:
     def retrieve(
         self,
         query: str,
-        metadata_filter: Optional[dict] = None,
-        top_k: Optional[int] = None,
+        metadata_filter: dict | None = None,
+        top_k: int | None = None,
     ) -> RetrievalResult:
         """Run the full three-stage retrieval pipeline.
 

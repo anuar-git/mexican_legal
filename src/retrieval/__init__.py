@@ -2,7 +2,7 @@
 
 from src.retrieval.generator import Citation, GenerationResult, Generator
 from src.retrieval.pipeline import query, query_stream
-from src.retrieval.retriever import RetrievedChunk, RetrievalResult, Retriever
+from src.retrieval.retriever import RetrievalResult, RetrievedChunk, Retriever
 
 __all__ = [
     "Retriever",

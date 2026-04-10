@@ -30,11 +30,10 @@ import time
 import uuid
 from contextlib import asynccontextmanager
 
-from fastapi import APIRouter, BackgroundTasks, Depends, FastAPI, Header, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, FastAPI, Header, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
-from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import Response
 from prometheus_client import (
     CONTENT_TYPE_LATEST,
     Counter,
@@ -43,17 +42,11 @@ from prometheus_client import (
     generate_latest,
 )
 from sse_starlette.sse import EventSourceResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 import src.retrieval.pipeline as _pipeline
 from src.api.config import settings
 from src.api.metrics_collector import MetricsCollector
-from src.api.request_logger import RequestLogger
-from src.retrieval.generator import (
-    ACTIVE_MODEL,
-    ACTIVE_PROMPT_VERSION,
-    build_citations,
-    extract_article_numbers,
-)
 from src.api.middleware import (
     RateLimiter,
     RequestIDMiddleware,
@@ -63,13 +56,20 @@ from src.api.middleware import (
     validation_exception_handler,
 )
 from src.api.models import (
-    EvalRequest,
     ErrorResponse,
+    EvalRequest,
     HealthResponse,
     QueryRequest,
     QueryResponse,
     RetrievalMetadata,
     split_citations,
+)
+from src.api.request_logger import RequestLogger
+from src.retrieval.generator import (
+    ACTIVE_MODEL,
+    ACTIVE_PROMPT_VERSION,
+    build_citations,
+    extract_article_numbers,
 )
 
 configure_logging(level=settings.log_level_int)
@@ -190,7 +190,6 @@ async def lifespan(app: FastAPI):
     logger.info("Starting Legal Intelligence Engine v%s", _VERSION)
 
     # ── Pinecone probe ──────────────────────────────────────────────────────
-    pinecone_ok = False
     vector_count = 0
     try:
         from pinecone import Pinecone
@@ -199,7 +198,6 @@ async def lifespan(app: FastAPI):
         _idx = _pc.Index(settings.pinecone_index_name)
         _stats = await asyncio.to_thread(_idx.describe_index_stats)
         vector_count = _stats.total_vector_count
-        pinecone_ok = True
         logger.info(
             "Pinecone connected",
             extra={"index": settings.pinecone_index_name, "vectors": vector_count},
@@ -433,7 +431,7 @@ async def query_endpoint(
         if n_flags:
             HALLUCINATION_COUNTER.inc(n_flags)
 
-        response = QueryResponse.from_generation_result(result, total_ms)
+        response = QueryResponse.from_generation_result(result, total_ms)  # type: ignore[arg-type]
 
         _metrics.record_request(total_ms, response.retrieval.avg_similarity_score)
         if _request_logger is not None:
@@ -472,7 +470,7 @@ async def query_endpoint(
                 detail=str(exc),
                 request_id=request_id,
             ).model_dump(),
-        )
+        ) from exc
     finally:
         ACTIVE_REQUESTS.dec()
 
@@ -751,6 +749,70 @@ async def evaluate(
         ),
         "request_id": getattr(request.state, "request_id", "unknown"),
     }
+
+
+# ---------------------------------------------------------------------------
+# GET /v1/requests  (monitoring — request log)
+# ---------------------------------------------------------------------------
+
+
+@router.get(
+    "/requests",
+    tags=["ops"],
+    summary="Request log (monitoring)",
+)
+async def get_requests(
+    limit: int = Query(500, ge=1, le=5000, description="Max rows to return"),
+) -> list[dict]:
+    """Return the most recent entries from the SQLite request log.
+
+    Used by the Streamlit monitoring dashboard to avoid requiring direct
+    filesystem access to the SQLite file.  Returns up to ``limit`` rows
+    ordered newest-first.
+    """
+    if _request_logger is None:
+        return []
+    with _request_logger._lock:
+        cursor = _request_logger.conn.execute(
+            "SELECT * FROM requests ORDER BY timestamp DESC LIMIT ?", (limit,)
+        )
+        cols = [d[0] for d in cursor.description]
+        return [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+
+# ---------------------------------------------------------------------------
+# GET /v1/eval-runs  (monitoring — evaluation results)
+# ---------------------------------------------------------------------------
+
+
+@router.get(
+    "/eval-runs",
+    tags=["ops"],
+    summary="Evaluation run results (monitoring)",
+)
+async def get_eval_runs() -> list[dict]:
+    """Return all evaluation run JSON files from the results/ directory.
+
+    Used by the Streamlit monitoring dashboard so it does not need direct
+    filesystem access to the results/ directory.  Results are returned sorted
+    by timestamp ascending.
+    """
+    import json as _json
+    from pathlib import Path as _Path
+
+    runs: list[dict] = []
+    base = _Path("results")
+    if not base.exists():
+        return runs
+    for path in sorted(base.glob("*.json")):
+        try:
+            data = _json.loads(path.read_text(encoding="utf-8"))
+            if "run_id" in data and "aggregate_scores" in data:
+                data["_file"] = path.name
+                runs.append(data)
+        except Exception:
+            pass
+    return sorted(runs, key=lambda r: r.get("timestamp", ""))
 
 
 # ---------------------------------------------------------------------------

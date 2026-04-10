@@ -28,7 +28,6 @@ from __future__ import annotations
 
 import re
 import statistics
-from typing import Optional
 
 from pydantic import BaseModel
 
@@ -247,7 +246,7 @@ def article_coverage_rate(eval_result: EvalResult) -> float:
     return round(len(covered) / len(expected_norm), 4)
 
 
-def oos_correctly_refused(eval_result: EvalResult) -> Optional[bool]:
+def oos_correctly_refused(eval_result: EvalResult) -> bool | None:
     """Did the model correctly refuse to answer an out-of-scope question?
 
     Only meaningful for ``adversarial_oos`` questions.  Returns ``None`` for
@@ -301,7 +300,7 @@ class ResultMetrics(BaseModel):
     retrieval_hit_rate: float
     article_coverage_rate: float
     hallucination_detected: bool
-    oos_correctly_refused: Optional[bool]
+    oos_correctly_refused: bool | None
     latency: dict[str, float]
     retrieved_article_set: list[str]
     missing_articles: list[str]
@@ -425,32 +424,32 @@ class AggregateMetrics(BaseModel):
     n_successful: int
     n_errors: int
 
-    mean_citation_accuracy: Optional[float]
-    mean_retrieval_hit_rate: Optional[float]
-    mean_article_coverage_rate: Optional[float]
-    hallucination_rate: Optional[float]
+    mean_citation_accuracy: float | None
+    mean_retrieval_hit_rate: float | None
+    mean_article_coverage_rate: float | None
+    hallucination_rate: float | None
     n_hallucinated: int
-    oos_refusal_rate: Optional[float]
+    oos_refusal_rate: float | None
     n_oos_questions: int
     n_oos_refused: int
 
-    mean_retrieval_ms: Optional[float]
-    mean_generation_ms: Optional[float]
-    mean_total_ms: Optional[float]
-    p95_total_ms: Optional[float]
+    mean_retrieval_ms: float | None
+    mean_generation_ms: float | None
+    mean_total_ms: float | None
+    p95_total_ms: float | None
 
-    mean_faithfulness: Optional[float]
-    mean_answer_relevance: Optional[float]
-    mean_context_relevance: Optional[float]
-    mean_context_recall: Optional[float]
+    mean_faithfulness: float | None
+    mean_answer_relevance: float | None
+    mean_context_relevance: float | None
+    mean_context_recall: float | None
 
 
-def _mean(values: list[float]) -> Optional[float]:
+def _mean(values: list[float]) -> float | None:
     """Return the mean of a non-empty list, or None."""
     return round(statistics.mean(values), 4) if values else None
 
 
-def _p95(values: list[float]) -> Optional[float]:
+def _p95(values: list[float]) -> float | None:
     """Return the 95th percentile of a non-empty list, or None."""
     if not values:
         return None
@@ -496,7 +495,7 @@ def aggregate(results: list[EvalResult]) -> AggregateMetrics:
     total_ms = [r.total_time_ms for r in ok]
 
     # RAGAS fields (already on EvalResult, may be None)
-    def _ragas_mean(field: str) -> Optional[float]:
+    def _ragas_mean(field: str) -> float | None:
         vals = [getattr(r, field) for r in ok if getattr(r, field) is not None]
         return _mean(vals)
 
@@ -529,7 +528,7 @@ def _stratum_summary(results: list[EvalResult]) -> dict:
     if not ok:
         return {"n": 0, "n_errors": len(results)}
 
-    def _ragas_mean(field: str) -> Optional[float]:
+    def _ragas_mean(field: str) -> float | None:
         vals = [getattr(r, field) for r in ok if getattr(r, field) is not None]
         return _mean(vals)
 

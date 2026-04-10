@@ -15,7 +15,6 @@ import logging
 import os
 import time
 from pathlib import Path
-from typing import List, Optional
 
 from dotenv import load_dotenv
 from pinecone import Pinecone
@@ -39,7 +38,7 @@ class EmbeddedChunk(TextChunk):
         embedding: Dense vector produced by ``_MODEL``.
     """
 
-    embedding: List[float]
+    embedding: list[float]
 
 
 # ---------------------------------------------------------------------------
@@ -60,7 +59,7 @@ def _get_pinecone_client() -> Pinecone:
 
 def _save_checkpoint(
     path: Path,
-    embedded: List[EmbeddedChunk],
+    embedded: list[EmbeddedChunk],
     total_chunks: int,
 ) -> None:
     """Persist current progress to ``path`` as JSON."""
@@ -78,7 +77,7 @@ def _save_checkpoint(
     logger.info("Checkpoint saved: %d/%d chunks", len(embedded), total_chunks)
 
 
-def _load_checkpoint(path: Path) -> Optional[List[EmbeddedChunk]]:
+def _load_checkpoint(path: Path) -> list[EmbeddedChunk] | None:
     """Return previously embedded chunks from ``path``, or None if absent."""
     if not path.exists():
         return None
@@ -91,7 +90,7 @@ def _load_checkpoint(path: Path) -> Optional[List[EmbeddedChunk]]:
     return embedded
 
 
-def _log_stats(embedded: List[EmbeddedChunk], elapsed: float) -> None:
+def _log_stats(embedded: list[EmbeddedChunk], elapsed: float) -> None:
     """Log summary statistics after embedding is complete."""
     total = len(embedded)
     avg_tokens = sum(c.token_count for c in embedded) / total
@@ -115,11 +114,11 @@ def _log_stats(embedded: List[EmbeddedChunk], elapsed: float) -> None:
 # ---------------------------------------------------------------------------
 
 def embed_chunks(
-    chunks: List[TextChunk],
+    chunks: list[TextChunk],
     batch_size: int = 64,
     checkpoint_every: int = 10,
     checkpoint_path: str = "data/processed/checkpoint.json",
-) -> List[EmbeddedChunk]:
+) -> list[EmbeddedChunk]:
     """Embed a list of TextChunks using llama-text-embed-v2 via Pinecone inference.
 
     Processes chunks in batches, saves a checkpoint after every
@@ -139,7 +138,7 @@ def embed_chunks(
     pc = _get_pinecone_client()
 
     # Resume from checkpoint if available
-    embedded: List[EmbeddedChunk] = _load_checkpoint(ckpt_file) or []
+    embedded: list[EmbeddedChunk] = _load_checkpoint(ckpt_file) or []
     start_index = len(embedded)
 
     if start_index >= len(chunks):
@@ -159,7 +158,7 @@ def embed_chunks(
                 parameters={"input_type": "passage", "truncate": "END"},
             )
 
-            for chunk, emb in zip(batch, response):
+            for chunk, emb in zip(batch, response, strict=True):
                 embedded.append(
                     EmbeddedChunk(**chunk.model_dump(), embedding=emb.values)
                 )

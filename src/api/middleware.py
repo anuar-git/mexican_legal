@@ -24,7 +24,7 @@ import logging
 import threading
 import time
 import uuid
-from typing import Callable
+from collections.abc import Callable
 
 from fastapi import HTTPException, Request
 from fastapi.exceptions import RequestValidationError
@@ -34,7 +34,6 @@ from starlette.types import ASGIApp
 
 from src.api.config import settings
 from src.api.models import ErrorResponse
-
 
 # ---------------------------------------------------------------------------
 # Structured JSON logging

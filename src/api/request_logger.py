@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import sqlite3
 import threading
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from src.api.models import QueryResponse
@@ -77,7 +77,7 @@ class RequestLogger:
             result:     Full ``QueryResponse`` returned to the client.
             status:     HTTP status code (200 for success, 500 for errors, …).
         """
-        ts = datetime.now(timezone.utc).isoformat()
+        ts = datetime.now(UTC).isoformat()
         with self._lock:
             self.conn.execute(
                 """

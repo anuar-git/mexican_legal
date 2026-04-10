@@ -48,7 +48,6 @@ import logging
 import math
 import os
 import warnings
-from typing import Optional
 
 from src.evaluation.evaluator import EvalResult, EvalRun
 
@@ -125,15 +124,15 @@ def _configure_metrics(
         ImportError: If ``ragas`` or ``langchain-anthropic`` are not installed.
     """
     try:
+        from langchain_anthropic import ChatAnthropic
+        from ragas.embeddings import LangchainEmbeddingsWrapper  # type: ignore[import-untyped]
+        from ragas.llms import LangchainLLMWrapper  # type: ignore[import-untyped]
         from ragas.metrics import (  # type: ignore[import-untyped]
             answer_relevancy,
             context_precision,
             context_recall,
             faithfulness,
         )
-        from ragas.llms import LangchainLLMWrapper  # type: ignore[import-untyped]
-        from ragas.embeddings import LangchainEmbeddingsWrapper  # type: ignore[import-untyped]
-        from langchain_anthropic import ChatAnthropic
     except ImportError as exc:
         raise ImportError(
             "RAGAS scoring requires ragas>=0.2 and langchain-anthropic>=0.3. "
@@ -141,7 +140,7 @@ def _configure_metrics(
         ) from exc
 
     llm = LangchainLLMWrapper(
-        ChatAnthropic(model=model, api_key=anthropic_api_key)
+        ChatAnthropic(model=model, api_key=anthropic_api_key)  # type: ignore[call-arg, arg-type]
     )
     embeddings = LangchainEmbeddingsWrapper(_SentenceTransformerEmbeddings(embed_model))
 
@@ -161,7 +160,7 @@ def _configure_metrics(
     return faithfulness, answer_relevancy, context_precision, context_recall
 
 
-def _to_ragas_dataset(scoreable: list[EvalResult]) -> "EvaluationDataset":  # type: ignore[name-defined]
+def _to_ragas_dataset(scoreable: list[EvalResult]) -> object:
     """Convert EvalResult objects to a RAGAS EvaluationDataset.
 
     ``context_recall`` and ``context_precision`` require a non-empty
@@ -189,15 +188,15 @@ def _to_ragas_dataset(scoreable: list[EvalResult]) -> "EvaluationDataset":  # ty
         )
         for r in scoreable
     ]
-    return EvaluationDataset(samples=samples)
+    return EvaluationDataset(samples=samples)  # type: ignore[arg-type]
 
 
-def _safe_float(value: object) -> Optional[float]:
+def _safe_float(value: object) -> float | None:
     """Convert a RAGAS score value to float, returning None for NaN/None."""
     if value is None:
         return None
     try:
-        f = float(value)
+        f = float(value)  # type: ignore[arg-type]
         return None if math.isnan(f) else round(f, 4)
     except (TypeError, ValueError):
         return None
@@ -229,7 +228,7 @@ def _map_scores_back(
             )
             continue
 
-        for result, raw_score in zip(scoreable, per_sample_scores):
+        for result, raw_score in zip(scoreable, per_sample_scores, strict=False):
             setattr(result, result_field, _safe_float(raw_score))
             logger.debug(
                 "  %s  %s=%.4f",
@@ -262,7 +261,7 @@ class RAGASScorer:
 
     def __init__(
         self,
-        anthropic_api_key: Optional[str] = None,
+        anthropic_api_key: str | None = None,
         model: str = "claude-haiku-4-5-20251001",
         embed_model: str = "sentence-transformers/all-MiniLM-L6-v2",
         batch_size: int = 15,
@@ -277,7 +276,7 @@ class RAGASScorer:
         self._embed_model = embed_model
         self._batch_size = batch_size
         self._show_progress = show_progress
-        self._metrics: Optional[tuple] = None  # lazy init
+        self._metrics: tuple | None = None  # lazy init
 
     def _ensure_metrics(self) -> tuple:
         if self._metrics is None:
@@ -390,7 +389,7 @@ class RAGASScorer:
 
 def score_with_ragas(
     eval_results: list[EvalResult],
-    anthropic_api_key: Optional[str] = None,
+    anthropic_api_key: str | None = None,
     **kwargs,
 ) -> list[EvalResult]:
     """Convenience function — score a result list and return it.

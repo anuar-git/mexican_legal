@@ -31,9 +31,8 @@ import json
 import logging
 import time
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -110,7 +109,7 @@ def _compute_retrieval_hit_rate(
 
 
 def _compute_aggregate_scores(
-    results: list["EvalResult"],
+    results: list[EvalResult],
     total_time_s: float,
 ) -> dict:
     """Compute mean scores across all successful results.
@@ -130,7 +129,7 @@ def _compute_aggregate_scores(
     n_total = len(results)
     n_ok = len(successful)
 
-    def _mean(values: list[Optional[float]]) -> Optional[float]:
+    def _mean(values: list[float | None]) -> float | None:
         valid = [v for v in values if v is not None]
         return round(sum(valid) / len(valid), 4) if valid else None
 
@@ -266,7 +265,7 @@ class EvalRun(BaseModel):
         logger.info("EvalRun %s saved → %s", self.run_id, path)
 
     @classmethod
-    def load(cls, path: Path | str) -> "EvalRun":
+    def load(cls, path: Path | str) -> EvalRun:
         """Deserialise an EvalRun from a JSON file.
 
         Args:
@@ -406,7 +405,7 @@ class Evaluator:
         )
 
         run_id = uuid.uuid4().hex[:8]
-        timestamp = datetime.now(timezone.utc).isoformat()
+        timestamp = datetime.now(UTC).isoformat()
 
         logger.info("=" * 62)
         logger.info("EvalRun %s  —  %d question(s)  (test set v%s)",

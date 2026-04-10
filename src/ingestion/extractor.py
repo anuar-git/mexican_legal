@@ -1,7 +1,6 @@
+
 import pdfplumber
 from pydantic import BaseModel
-from typing import List
-
 
 
 class ExtractedPage(BaseModel):
@@ -9,7 +8,7 @@ class ExtractedPage(BaseModel):
     raw_text: str
     source_file: str
 
-def extract_pages(pdf_path: str) -> List[ExtractedPage]:
+def extract_pages(pdf_path: str) -> list[ExtractedPage]:
     pages = []
     with pdfplumber.open(pdf_path) as pdf:
         for i, page in enumerate(pdf.pages, start=1):

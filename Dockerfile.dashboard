@@ -20,7 +20,8 @@ RUN groupadd --gid 1001 appgroup \
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir \
         "streamlit>=1.35" \
-        "pandas>=2.0"
+        "pandas>=2.0" \
+        "plotly>=5.0"
 
 # Copy monitoring source only — no ingestion, retrieval, or API code needed.
 COPY src/monitoring/ /app/src/monitoring/
@@ -31,7 +32,6 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 # Runtime env defaults; overridden by docker-compose environment: block.
-ENV DB_PATH=/app/data/requests.db
 ENV API_URL=http://api:8000
 
 USER appuser

@@ -20,7 +20,6 @@ from __future__ import annotations
 import asyncio
 import logging
 from collections.abc import AsyncIterator
-from typing import Optional
 
 from src.retrieval.generator import GenerationResult, Generator
 from src.retrieval.retriever import RetrievalResult, Retriever
@@ -32,8 +31,8 @@ logger = logging.getLogger(__name__)
 # Initialised lazily on first call so import does not trigger network/disk I/O.
 # ---------------------------------------------------------------------------
 
-_retriever: Optional[Retriever] = None
-_generator: Optional[Generator] = None
+_retriever: Retriever | None = None
+_generator: Generator | None = None
 
 
 def _get_retriever() -> Retriever:
@@ -140,7 +139,7 @@ async def retrieve(
 async def query_stream(
     question: str,
     filters: dict | None = None,
-    retrieval: Optional[RetrievalResult] = None,
+    retrieval: RetrievalResult | None = None,
 ) -> AsyncIterator[str]:
     """Stream answer tokens for a question.
 

@@ -20,13 +20,12 @@ import os
 import re
 import time
 from collections.abc import Iterator
-from typing import Optional
 
 import anthropic
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-from src.retrieval.prompts import PROMPT_REGISTRY, QUERY_TEMPLATE, SYSTEM_PROMPT
+from src.retrieval.prompts import QUERY_TEMPLATE, SYSTEM_PROMPT
 from src.retrieval.retriever import RetrievalResult, RetrievedChunk
 
 logger = logging.getLogger(__name__)
@@ -175,7 +174,7 @@ def build_citations(
     citations: list[Citation] = []
 
     for article in article_numbers:
-        matched_chunk: Optional[RetrievedChunk] = None
+        matched_chunk: RetrievedChunk | None = None
 
         for chunk in chunks:
             # Check metadata field first (exact match after normalisation)
@@ -281,7 +280,7 @@ class Generator:
         )
         generation_time_ms = (time.monotonic() - t0) * 1000
 
-        answer = response.content[0].text
+        answer = response.content[0].text  # type: ignore[union-attr]
 
         article_numbers = extract_article_numbers(answer)
         citations = build_citations(article_numbers, retrieval.chunks)
@@ -341,5 +340,4 @@ class Generator:
             system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": user_message}],
         ) as stream:
-            for text in stream.text_stream:
-                yield text
+            yield from stream.text_stream

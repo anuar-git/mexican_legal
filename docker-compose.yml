@@ -63,10 +63,6 @@ services:
       # Override API_URL so the dashboard reaches the API by service name.
       # Docker's internal DNS resolves "api" to the API container's IP.
       API_URL: "http://api:8000"
-      DB_PATH: "/app/data/requests.db"
-    volumes:
-      # Read-only: the dashboard only reads the SQLite log, never writes it.
-      - ./data:/app/data:ro
     depends_on:
       api:
         condition: service_healthy

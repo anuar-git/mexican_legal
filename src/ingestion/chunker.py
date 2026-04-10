@@ -6,8 +6,6 @@ Provides two selectable strategies:
 """
 
 import re
-from typing import List, Optional
-
 import tiktoken
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pydantic import BaseModel
@@ -56,13 +54,13 @@ class TextChunk(BaseModel):
     token_count: int
     word_count: int
     chunk_strategy: str
-    article_number: Optional[str] = None
-    title: Optional[str] = None
-    chapter: Optional[str] = None
-    section: Optional[str] = None
+    article_number: str | None = None
+    title: str | None = None
+    chapter: str | None = None
+    section: str | None = None
     is_continuation: bool = False
-    prev_chunk_index: Optional[int] = None
-    next_chunk_index: Optional[int] = None
+    prev_chunk_index: int | None = None
+    next_chunk_index: int | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -88,13 +86,13 @@ _RE_CHAPTER = re.compile(r'(?:^|\n)\s*CAP[ÍI]TULO\s+([^\n]+)', re.IGNORECASE)
 _RE_SECTION = re.compile(r'(?:^|\n)\s*SECCI[ÓO]N\s+([^\n]+)',  re.IGNORECASE)
 
 
-def _first_match(pattern: re.Pattern, text: str) -> Optional[str]:
+def _first_match(pattern: re.Pattern, text: str) -> str | None:
     """Return the first captured group of ``pattern`` in ``text``, or None."""
     m = pattern.search(text)
     return m.group(1).strip() if m else None
 
 
-def _opening_article(text: str) -> Optional[str]:
+def _opening_article(text: str) -> str | None:
     """Return the article number if ``text`` opens with an article header, else None.
 
     Only matches at the very start of the chunk so that lowercase body references
@@ -112,7 +110,7 @@ def _opening_article(text: str) -> Optional[str]:
 # in turn and only falls back when a segment still exceeds chunk_size.
 # Both ALL-CAPS and mixed-case variants are listed for ARTÍCULO because the
 # CDMX Penal Code uses ALL-CAPS in headers but mixed-case in body references.
-_LEGAL_SEPARATORS: List[str] = [
+_LEGAL_SEPARATORS: list[str] = [
     "\nARTÍCULO ",  # Article boundary — ALL-CAPS as used in the PDF headers
     "\nArtículo ",  # Mixed-case fallback (other legal documents)
     "\nCAPÍTULO ",  # Chapter boundary
@@ -129,7 +127,7 @@ _LEGAL_SEPARATORS: List[str] = [
 # Chunking strategy
 # ---------------------------------------------------------------------------
 
-def recursive_chunk(pages: List[ExtractedPage]) -> List[TextChunk]:
+def recursive_chunk(pages: list[ExtractedPage]) -> list[TextChunk]:
     """Split extracted pages into token-bounded chunks using recursive character splitting.
 
     Applies LangChain's RecursiveCharacterTextSplitter with legal-document-aware
@@ -157,14 +155,14 @@ def recursive_chunk(pages: List[ExtractedPage]) -> List[TextChunk]:
         is_separator_regex=False,
     )
 
-    chunks: List[TextChunk] = []
+    chunks: list[TextChunk] = []
     chunk_index = 0
 
     # Running document hierarchy — updated as headings are encountered.
-    current_title:   Optional[str] = None
-    current_chapter: Optional[str] = None
-    current_section: Optional[str] = None
-    current_article: Optional[str] = None
+    current_title:   str | None = None
+    current_chapter: str | None = None
+    current_section: str | None = None
+    current_article: str | None = None
 
     for page in pages:
         raw_text = page.raw_text

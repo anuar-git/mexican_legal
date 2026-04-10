@@ -74,4 +74,4 @@ class Settings(BaseSettings):
 
 
 # Module-level singleton — imported by main.py and middleware.py.
-settings = Settings()
+settings = Settings()  # type: ignore[call-arg]

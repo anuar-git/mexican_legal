@@ -27,16 +27,13 @@ Usage::
 from __future__ import annotations
 
 import statistics
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Optional
 
 from src.evaluation.evaluator import EvalResult, EvalRun
 from src.evaluation.metrics import (
     aggregate,
-    article_coverage_rate,
     citation_accuracy,
-    detect_hallucination,
     oos_correctly_refused,
     retrieval_hit_rate,
     score_result,
@@ -52,28 +49,28 @@ _DEFAULT_REPORT_DIR = Path("results/reports")
 # ---------------------------------------------------------------------------
 
 
-def _fmt(value: Optional[float], decimals: int = 3) -> str:
+def _fmt(value: float | None, decimals: int = 3) -> str:
     """Format a float for table display; show '—' for None."""
     if value is None:
         return "—"
     return f"{value:.{decimals}f}"
 
 
-def _pct(value: Optional[float]) -> str:
+def _pct(value: float | None) -> str:
     """Format a [0,1] float as a percentage string."""
     if value is None:
         return "—"
     return f"{value * 100:.1f}%"
 
 
-def _ms(value: Optional[float]) -> str:
+def _ms(value: float | None) -> str:
     """Format a millisecond value."""
     if value is None:
         return "—"
     return f"{value:.0f} ms"
 
 
-def _bar(value: Optional[float], width: int = 10) -> str:
+def _bar(value: float | None, width: int = 10) -> str:
     """Simple ASCII bar chart for [0,1] values."""
     if value is None:
         return " " * width
@@ -97,8 +94,8 @@ def _header_section(run: EvalRun) -> str:
     lines = [
         f"# Evaluation Report — Run `{run.run_id}`",
         "",
-        f"| Field | Value |",
-        f"|-------|-------|",
+        "| Field | Value |",
+        "|-------|-------|",
         f"| **Date** | {ts} |",
         f"| **Test set** | {run.test_set_version} |",
         f"| **Model** | {model} |",
@@ -117,7 +114,7 @@ def _aggregate_section(run: EvalRun) -> str:
     # Compute p50 (median) total latency inline — not stored on AggregateMetrics
     ok = [r for r in run.results if r.error is None]
     total_ms_vals = [r.total_time_ms for r in ok]
-    p50_ms: Optional[float] = (
+    p50_ms: float | None = (
         round(statistics.median(total_ms_vals), 1) if total_ms_vals else None
     )
 
@@ -300,8 +297,8 @@ def _failure_analysis_section(run: EvalRun) -> str:
         "",
         "### Common Failure Patterns",
         "",
-        f"| Pattern | Count | % of successful |",
-        f"|---------|-------|-----------------|",
+        "| Pattern | Count | % of successful |",
+        "|---------|-------|-----------------|",
         f"| Retrieval miss (hit rate < 50%) | {len(retrieval_misses)} | {_pct(len(retrieval_misses)/len(ok) if ok else None)} |",
         f"| Generator coverage gap (retrieved but not cited) | {len(gen_failures)} | {_pct(len(gen_failures)/len(ok) if ok else None)} |",
         f"| Hallucinated citations | {len(hallucinations)} | {_pct(len(hallucinations)/len(ok) if ok else None)} |",
@@ -335,7 +332,7 @@ def _failure_analysis_section(run: EvalRun) -> str:
 
 
 def _footer_section(run: EvalRun) -> str:
-    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    generated_at = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     lines = [
         "---",
         "",

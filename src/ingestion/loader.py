@@ -17,7 +17,6 @@ import logging
 import os
 import time
 from pathlib import Path
-from typing import List
 
 from dotenv import load_dotenv
 from pinecone import Pinecone, ServerlessSpec
@@ -125,7 +124,7 @@ def _fetch_existing_ids(index) -> set[str]:
 
 def _upsert_batches(
     index,
-    chunks: List[EmbeddedChunk],
+    chunks: list[EmbeddedChunk],
     batch_size: int,
 ) -> int:
     """Upsert ``chunks`` in batches. Returns the number of vectors upserted."""
@@ -167,7 +166,7 @@ def _log_stats(index, upserted_count: int, elapsed: float) -> None:
 # ---------------------------------------------------------------------------
 
 def upsert_chunks(
-    chunks: List[EmbeddedChunk],
+    chunks: list[EmbeddedChunk],
     mode: str = "update",
     batch_size: int = 100,
 ) -> int:
