@@ -30,7 +30,16 @@ import time
 import uuid
 from contextlib import asynccontextmanager
 
-from fastapi import APIRouter, BackgroundTasks, Depends, FastAPI, Header, HTTPException, Query, Request
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    FastAPI,
+    Header,
+    HTTPException,
+    Query,
+    Request,
+)
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
@@ -777,7 +786,7 @@ async def get_requests(
             "SELECT * FROM requests ORDER BY timestamp DESC LIMIT ?", (limit,)
         )
         cols = [d[0] for d in cursor.description]
-        return [dict(zip(cols, row)) for row in cursor.fetchall()]
+        return [dict(zip(cols, row, strict=False)) for row in cursor.fetchall()]
 
 
 # ---------------------------------------------------------------------------
