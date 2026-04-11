@@ -69,16 +69,16 @@ if _col_btn.button("🔄 Refresh", use_container_width=True):
 
 
 @st.cache_data(ttl=CACHE_TTL)
-def _fetch_health(api_url: str) -> dict | None:
-    """GET /v1/health.  Returns None on any failure."""
+def _fetch_health(api_url: str) -> tuple[dict | None, str | None]:
+    """GET /v1/health.  Returns (data, None) on success or (None, error) on failure."""
     try:
-        with urllib.request.urlopen(f"{api_url}/v1/health", timeout=3) as resp:
-            return json.loads(resp.read())
-    except Exception:
-        return None
+        with urllib.request.urlopen(f"{api_url}/v1/health", timeout=10) as resp:
+            return json.loads(resp.read()), None
+    except Exception as exc:
+        return None, f"{type(exc).__name__}: {exc}"
 
 
-_health = _fetch_health(API_URL)
+_health, _health_err = _fetch_health(API_URL)
 
 if _health:
     _icon = {"healthy": "✅", "degraded": "⚠️", "unhealthy": "❌"}.get(
@@ -94,7 +94,8 @@ if _health:
         f" &nbsp;·&nbsp; v{_health.get('version', '—')}"
     )
 else:
-    st.warning(f"API unreachable at `{API_URL}` — health check timed out.")
+    st.warning(f"API unreachable at `{API_URL}`")
+    st.code(_health_err or "unknown error", language=None)
 
 st.divider()
 
