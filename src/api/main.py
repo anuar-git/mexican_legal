@@ -53,7 +53,6 @@ from prometheus_client import (
 from sse_starlette.sse import EventSourceResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-import src.retrieval.pipeline as _pipeline
 from src.api.config import settings
 from src.api.metrics_collector import MetricsCollector
 from src.api.middleware import (
@@ -74,6 +73,7 @@ from src.api.models import (
     split_citations,
 )
 from src.api.request_logger import RequestLogger
+from src.retrieval import pipeline as _pipeline
 from src.retrieval.generator import (
     ACTIVE_MODEL,
     ACTIVE_PROMPT_VERSION,

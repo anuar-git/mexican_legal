@@ -53,3 +53,4 @@ ignore_missing_imports = true
 check_untyped_defs = true
 warn_redundant_casts = true
 warn_unused_ignores = false   # ragas/pinecone stubs are inconsistent across versions
+explicit_package_bases = true
